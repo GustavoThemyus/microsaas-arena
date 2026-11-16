@@ -1,0 +1,13 @@
+# Segredos
+.env
+.env.*
+!.env.example
+frontend/.env.local
+
+# Build e dependências
+backend/target/
+frontend/node_modules/
+frontend/.next/
+*.log
+.idea/
+.vscode/

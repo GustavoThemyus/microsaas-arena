@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: cobranca
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/cobranca}
+    username: ${DB_USER:cobranca}
+    password: ${DB_PASSWORD:cobranca}
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 1
+  main:
+    lazy-initialization: true
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      max-request-size: 1MB
+  profiles:
+    # "demo" liga seed e rotas /api/demo/**. Em um produto real isso ficaria desligado.
+    default: demo
+
+server:
+  port: ${PORT:8080}
+  tomcat:
+    threads:
+      max: 20
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+app:
+  escola-id: 1
+  allowed-origin: ${ALLOWED_ORIGIN:http://localhost:3000}
+  # Se vazio, a API fica aberta (somente desenvolvimento local). Em produção, SEMPRE definir.
+  demo-token: ${DEMO_TOKEN:}
+  # Telefone usado nos alunos fictícios (formato 55DDNÚMERO). Padrão: número claramente fictício.
+  demo-whatsapp: ${DEMO_WHATSAPP:5583900000000}

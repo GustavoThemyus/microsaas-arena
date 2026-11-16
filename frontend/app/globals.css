@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* Demo só tem tema claro (o celular do sócio pode estar em modo escuro e não pode quebrar o contraste). */
+:root {
+  color-scheme: light;
+}
+
+body {
+  background: #f8fafc;
+  color: #0f172a;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
