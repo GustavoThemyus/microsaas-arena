@@ -2,7 +2,7 @@ spring:
   application:
     name: cobranca
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/cobranca}
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5434/cobranca}
     username: ${DB_USER:cobranca}
     password: ${DB_PASSWORD:cobranca}
     hikari:
