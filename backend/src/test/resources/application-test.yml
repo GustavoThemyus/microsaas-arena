@@ -1,2 +1,5 @@
 app:
   demo-token: ""
+  asaas:
+    api-key: chave-falsa-de-teste
+    webhook-token: token-de-teste

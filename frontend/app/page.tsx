@@ -113,7 +113,11 @@ export default function PainelPage() {
 
       <ul className="space-y-2">
         {itens.map((i) => (
-          <li key={i.cobrancaId} className="flex items-center justify-between rounded-xl bg-white px-3 py-3 shadow-sm ring-1 ring-slate-100">
+          <li key={i.cobrancaId}>
+            <Link
+              href={`/cobranca/${i.cobrancaId}`}
+              className="flex items-center justify-between rounded-xl bg-white px-3 py-3 shadow-sm ring-1 ring-slate-100 active:bg-slate-50"
+            >
             <div className="min-w-0">
               <p className="truncate font-medium">{i.aluno}</p>
               <p className="truncate text-xs text-slate-500">
@@ -126,6 +130,7 @@ export default function PainelPage() {
                 {ROTULO[i.status]}
               </span>
             </div>
+            </Link>
           </li>
         ))}
         {itens.length === 0 && <li className="py-8 text-center text-sm text-slate-500">Nenhum aluno nesta situação.</li>}

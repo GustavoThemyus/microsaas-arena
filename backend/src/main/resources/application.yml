@@ -1,6 +1,9 @@
 spring:
   application:
     name: cobranca
+  config:
+    # Lê o .env da raiz do projeto (segredos locais, ignorado pelo git). Variáveis de ambiente reais têm prioridade.
+    import: optional:file:../.env[.properties],optional:file:./.env[.properties]
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5434/cobranca}
     username: ${DB_USER:cobranca}
@@ -19,6 +22,8 @@ spring:
     default: demo
 
 server:
+  error:
+    include-message: always
   port: ${PORT:8080}
   tomcat:
     threads:
@@ -37,3 +42,8 @@ app:
   demo-token: ${DEMO_TOKEN:}
   # Telefone usado nos alunos fictícios (formato 55DDNÚMERO). Padrão: número claramente fictício.
   demo-whatsapp: ${DEMO_WHATSAPP:5583900000000}
+  asaas:
+    # Esta demo SÓ aceita o sandbox (o cliente recusa qualquer outra URL).
+    base-url: ${ASAAS_BASE_URL:https://api-sandbox.asaas.com}
+    api-key: ${ASAAS_API_KEY:}
+    webhook-token: ${ASAAS_WEBHOOK_TOKEN:}

@@ -50,4 +50,9 @@ public class AlunoRepository {
                 .query(Long.class).single();
         return new Salvo(id, true);
     }
+
+    public void salvarClienteAsaas(long alunoId, String asaasCustomerId) {
+        jdbc.sql("UPDATE aluno SET asaas_customer_id = :c WHERE id = :id")
+                .param("c", asaasCustomerId).param("id", alunoId).update();
+    }
 }
