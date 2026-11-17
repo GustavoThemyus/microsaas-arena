@@ -5,6 +5,7 @@ import DemoBanner from "@/components/DemoBanner";
 export const metadata: Metadata = {
   title: "Mensalidades — Demo",
   description: "Demonstração de cobrança de mensalidades por Pix para escolinhas esportivas",
+  manifest: "/manifest.webmanifest",
   appleWebApp: { capable: true, title: "Mensalidades", statusBarStyle: "default" },
 };
 

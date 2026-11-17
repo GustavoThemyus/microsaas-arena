@@ -34,12 +34,13 @@ public class DemoSeedService {
     private record Turma(String nome, String modalidade, long mensalidadeCentavos) {
     }
 
+    // Modalidades alinhadas às escolinhas pesquisadas em João Pessoa (futebol, futevôlei, vôlei, basquete, tênis).
     private static final List<Turma> TURMAS = List.of(
-            new Turma("Futsal Sub-11", "Futsal", 12000),
-            new Turma("Futebol Sub-13", "Futebol", 14000),
+            new Turma("Futebol Sub-11", "Futebol", 12000),
+            new Turma("Futevôlei Iniciante", "Futevôlei", 15000),
             new Turma("Vôlei Infantil", "Vôlei", 13000),
-            new Turma("Beach Tennis Iniciante", "Beach Tennis", 18000),
-            new Turma("Natação Kids", "Natação", 16000));
+            new Turma("Basquete Sub-13", "Basquete", 14000),
+            new Turma("Tênis Iniciante", "Tênis", 18000));
 
     private final JdbcClient jdbc;
     private final AlunoRepository alunos;

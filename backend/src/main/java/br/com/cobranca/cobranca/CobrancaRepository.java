@@ -31,14 +31,15 @@ public class CobrancaRepository {
     /** Cobrança + dados do aluno, tudo que as telas e o Asaas precisam. */
     public record Linha(long id, long alunoId, String aluno, String turma, String cpf, String asaasCustomerId,
                         long valorCentavos, LocalDate vencimento, String status, OffsetDateTime pagoEm,
-                        String asaasPaymentId, String pixPayload, String pixQrBase64, String linkFatura) {
+                        String asaasPaymentId, String pixPayload, String pixQrBase64, String linkFatura,
+                        String responsavel, String telefone) {
     }
 
     public Optional<Linha> buscar(long id, long escolaId) {
         return jdbc.sql("""
                 SELECT c.id, a.id AS aluno_id, a.nome, t.nome AS turma, a.cpf_cnpj_ficticio, a.asaas_customer_id,
                        c.valor_centavos, c.vencimento, c.status, c.pago_em, c.asaas_payment_id,
-                       c.pix_payload, c.pix_qr_base64, c.link_fatura
+                       c.pix_payload, c.pix_qr_base64, c.link_fatura, a.responsavel_nome, a.telefone
                 FROM cobranca c JOIN aluno a ON a.id = c.aluno_id JOIN turma t ON t.id = a.turma_id
                 WHERE c.id = :id AND c.escola_id = :e""")
                 .param("id", id).param("e", escolaId)
@@ -47,7 +48,8 @@ public class CobrancaRepository {
                         rs.getString("asaas_customer_id"), rs.getLong("valor_centavos"),
                         rs.getObject("vencimento", LocalDate.class), rs.getString("status"),
                         rs.getObject("pago_em", OffsetDateTime.class), rs.getString("asaas_payment_id"),
-                        rs.getString("pix_payload"), rs.getString("pix_qr_base64"), rs.getString("link_fatura")))
+                        rs.getString("pix_payload"), rs.getString("pix_qr_base64"), rs.getString("link_fatura"),
+                        rs.getString("responsavel_nome"), rs.getString("telefone")))
                 .optional();
     }
 

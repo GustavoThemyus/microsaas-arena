@@ -17,6 +17,8 @@ type Detalhe = {
   linkFatura: string | null;
 };
 
+type Zap = { telefone: string; texto: string; url: string };
+
 const ROTULO = { PAGA: "Pago", ABERTA: "A vencer", ATRASADA: "Atrasado" } as const;
 const COR = {
   PAGA: "bg-emerald-100 text-emerald-800",
@@ -29,6 +31,7 @@ export default function CobrancaView({ id }: { id: string }) {
   const [erro, setErro] = useState<string | null>(null);
   const [ocupado, setOcupado] = useState<"pix" | "simular" | null>(null);
   const [copiado, setCopiado] = useState(false);
+  const [zap, setZap] = useState<Zap | null>(null);
 
   const carregar = useCallback(async () => {
     try {
@@ -56,6 +59,21 @@ export default function CobrancaView({ id }: { id: string }) {
     const t = setInterval(carregar, 3000);
     return () => clearInterval(t);
   }, [aguardando, carregar]);
+
+  // O link do WhatsApp é buscado antes do clique e renderizado como <a>: abrir um link vindo de um clique direto
+  // não é bloqueado pelo navegador do celular (abrir janela depois de um fetch pode ser).
+  const pendente = d !== null && d.status !== "PAGA";
+  const temPix = d?.pixCopiaECola != null;
+  useEffect(() => {
+    if (!pendente) return;
+    let ativo = true;
+    api<Zap>(`/api/cobrancas/${id}/whatsapp`)
+      .then((z) => ativo && setZap(z))
+      .catch(() => ativo && setZap(null));
+    return () => {
+      ativo = false;
+    };
+  }, [id, pendente, temPix]);
 
   async function acao(tipo: "pix" | "simular") {
     setOcupado(tipo);
@@ -111,6 +129,19 @@ export default function CobrancaView({ id }: { id: string }) {
           <p className="font-bold text-emerald-800">Pagamento confirmado!</p>
           <p className="text-sm text-emerald-700">Baixa feita automaticamente.</p>
         </section>
+      )}
+
+      {zap && d.status !== "PAGA" && (
+        <a
+          href={zap.url}
+          target="_blank"
+          rel="noreferrer"
+          className={`mt-4 block w-full rounded-xl py-3 text-center font-semibold ${
+            d.status === "ATRASADA" ? "bg-emerald-600 text-white" : "bg-white text-emerald-700 ring-1 ring-emerald-600"
+          }`}
+        >
+          💬 Lembrar no WhatsApp
+        </a>
       )}
 
       {d.status !== "PAGA" && !d.pixCopiaECola && (

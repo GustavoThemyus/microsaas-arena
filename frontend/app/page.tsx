@@ -115,7 +115,7 @@ export default function PainelPage() {
         {itens.map((i) => (
           <li key={i.cobrancaId}>
             <Link
-              href={`/cobranca/${i.cobrancaId}`}
+              href={`/cobranca?id=${i.cobrancaId}`}
               className="flex items-center justify-between rounded-xl bg-white px-3 py-3 shadow-sm ring-1 ring-slate-100 active:bg-slate-50"
             >
             <div className="min-w-0">

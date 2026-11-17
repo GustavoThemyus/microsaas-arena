@@ -1,9 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  cacheComponents: true,
-  partialPrefetching: true,
+  // Exporta HTML estático (pasta out/): o front não precisa de servidor Node, só de hospedagem de arquivos.
+  output: "export",
   reactCompiler: true,
   turbopack: {
     rules: {
