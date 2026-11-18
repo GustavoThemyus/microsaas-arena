@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 import DemoBanner from "@/components/DemoBanner";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export const metadata: Metadata = {
   title: "Mensalidades — Demo",
@@ -33,7 +34,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-full bg-background text-foreground">
         <DemoBanner />
-        <main className="mx-auto w-full max-w-md px-4 pb-28 pt-4">{children}</main>
+        <main className="relative mx-auto w-full max-w-md px-4 pb-28 pt-4">
+          <div className="absolute right-4 top-4 z-10">
+            <ThemeToggle />
+          </div>
+          {children}
+        </main>
         <BottomNav />
       </body>
     </html>

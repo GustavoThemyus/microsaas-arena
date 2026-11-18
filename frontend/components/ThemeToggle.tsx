@@ -2,7 +2,6 @@
 
 import { useSyncExternalStore } from "react";
 import { Moon, Sun } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 type Tema = "light" | "dark";
 
@@ -22,7 +21,7 @@ function assinar(aviso: () => void) {
   };
 }
 
-/** Item do menu inferior que alterna claro/escuro. Sem escolha salva, segue o tema do aparelho. */
+/** Botão de ícone (canto superior direito) que alterna claro/escuro. Sem escolha salva, segue o tema do aparelho. */
 export default function ThemeToggle() {
   const tema = useSyncExternalStore(assinar, lerTema, () => "light" as Tema);
   const escuro = tema === "dark";
@@ -43,14 +42,9 @@ export default function ThemeToggle() {
       type="button"
       onClick={alternar}
       aria-label={escuro ? "Mudar para o tema claro" : "Mudar para o tema escuro"}
-      className={cn(
-        "flex h-16 w-full flex-col items-center justify-center gap-0.5 text-xs font-medium text-muted-foreground outline-none focus-visible:bg-muted",
-      )}
+      className="flex size-10 items-center justify-center rounded-lg border bg-card text-muted-foreground shadow-xs shadow-black/5 outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
     >
-      <span className="flex size-8 items-center justify-center rounded-lg">
-        {escuro ? <Sun className="size-5" aria-hidden /> : <Moon className="size-5" aria-hidden />}
-      </span>
-      {escuro ? "Claro" : "Escuro"}
+      {escuro ? <Sun className="size-5" aria-hidden /> : <Moon className="size-5" aria-hidden />}
     </button>
   );
 }
