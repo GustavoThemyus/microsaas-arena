@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Upload } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
 
 const ITENS = [
@@ -20,7 +21,7 @@ export default function BottomNav() {
       aria-label="Navegação principal"
       className="fixed inset-x-0 bottom-0 z-40 border-t bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur"
     >
-      <ul className="mx-auto grid max-w-md grid-cols-2 divide-x">
+      <ul className="mx-auto grid max-w-md grid-cols-3 divide-x">
         {ITENS.map(({ href, rotulo, Icone }) => (
           <li key={href}>
             <Link
@@ -43,6 +44,9 @@ export default function BottomNav() {
             </Link>
           </li>
         ))}
+        <li>
+          <ThemeToggle />
+        </li>
       </ul>
     </nav>
   );

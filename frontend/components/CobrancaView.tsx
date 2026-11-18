@@ -190,7 +190,7 @@ export default function CobrancaView({ id }: { id: string }) {
               <img
                 src={`data:image/png;base64,${d.pixQrBase64}`}
                 alt="QR code Pix"
-                className="size-56 rounded-lg border p-2"
+                className="size-56 rounded-lg border bg-white p-2"
               />
             )}
             <p className="mt-3 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">

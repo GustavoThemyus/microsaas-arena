@@ -11,7 +11,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0f766e",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f1f1f3" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b0b0d" },
+  ],
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -19,8 +22,16 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className="h-full antialiased">
-      <body className="min-h-full bg-slate-50 text-slate-900">
+    <html lang="pt-BR" className="h-full antialiased" suppressHydrationWarning>
+      <head>
+        {/* Aplica o tema salvo antes da primeira pintura (evita piscar claro->escuro). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem("tema");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}`,
+          }}
+        />
+      </head>
+      <body className="min-h-full bg-background text-foreground">
         <DemoBanner />
         <main className="mx-auto w-full max-w-md px-4 pb-28 pt-4">{children}</main>
         <BottomNav />
