@@ -1,8 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { ChevronRight, Clock, GraduationCap, RotateCcw, TriangleAlert, Upload, Wallet } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import Acordando from "@/components/Acordando";
+import StatusBadge, { ROTULO, type Situacao } from "@/components/StatusBadge";
+import { Button } from "@/components/ui/button";
+import { Card, CardSection } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { acordarApi, api, capturarTokenDaUrl, dataBr, reais } from "@/lib/api";
 
 type Item = {
@@ -11,7 +18,7 @@ type Item = {
   turma: string;
   valorCentavos: number;
   vencimento: string;
-  status: "PAGA" | "ABERTA" | "ATRASADA";
+  status: Situacao;
 };
 type Painel = {
   mes: string;
@@ -26,19 +33,19 @@ type Painel = {
   itens: Item[];
 };
 
-const ROTULO = { PAGA: "Pago", ABERTA: "A vencer", ATRASADA: "Atrasado" } as const;
-const COR = {
-  PAGA: "bg-emerald-100 text-emerald-800",
-  ABERTA: "bg-slate-200 text-slate-700",
-  ATRASADA: "bg-red-100 text-red-800",
-} as const;
 const FILTROS = ["TODOS", "ATRASADA", "ABERTA", "PAGA"] as const;
+type Filtro = (typeof FILTROS)[number];
+
+function iniciais(nome: string) {
+  const p = nome.trim().split(/\s+/);
+  return ((p[0]?.[0] ?? "") + (p.length > 1 ? p[p.length - 1][0] : "")).toUpperCase();
+}
 
 export default function PainelPage() {
   const [painel, setPainel] = useState<Painel | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [tentativa, setTentativa] = useState(0);
-  const [filtro, setFiltro] = useState<(typeof FILTROS)[number]>("TODOS");
+  const [filtro, setFiltro] = useState<Filtro>("TODOS");
 
   const carregar = useCallback(async () => {
     try {
@@ -67,98 +74,133 @@ export default function PainelPage() {
     };
   }, [carregar]);
 
-  if (erro && !painel) return <p className="mt-16 text-center text-red-700">{erro}</p>;
+  if (erro && !painel) return <p className="mt-16 text-center text-destructive">{erro}</p>;
   if (!painel) return <Acordando tentativa={tentativa} />;
 
   const t = painel.totais;
+  const total = t.pagos + t.abertos + t.atrasados;
+  const contagem: Record<Filtro, number> = { TODOS: total, ATRASADA: t.atrasados, ABERTA: t.abertos, PAGA: t.pagos };
   const itens = painel.itens.filter((i) => filtro === "TODOS" || i.status === filtro);
   const [ano, mes] = painel.mes.split("-");
 
   return (
     <>
-      <header className="mb-4 flex items-end justify-between">
-        <div>
-          <h1 className="text-lg font-bold">Escolinha Modelo</h1>
-          <p className="text-sm text-slate-500">
+      <header className="flex items-center gap-3">
+        <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm shadow-black/10">
+          <GraduationCap className="size-6" aria-hidden />
+        </div>
+        <div className="min-w-0 flex-1">
+          <h1 className="truncate text-lg font-bold leading-tight">Escolinha Modelo</h1>
+          <p className="text-sm text-muted-foreground">
             Mensalidades de {mes}/{ano}
           </p>
         </div>
-        <Link
-          href="/importar"
-          className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white active:bg-teal-800"
-        >
-          Importar CSV
-        </Link>
+        <Button asChild size="sm" variant="outline">
+          <Link href="/importar">
+            <Upload aria-hidden />
+            Importar
+          </Link>
+        </Button>
       </header>
 
-      <section className="mb-4 grid grid-cols-2 gap-2">
-        <Cartao titulo="Recebido no mês" valor={reais(t.recebidoCentavos)} detalhe={`${t.pagos} pagos`} cor="text-emerald-700" />
-        <Cartao titulo="Em aberto" valor={reais(t.emAbertoCentavos)} detalhe={`${t.abertos + t.atrasados} alunos`} cor="text-slate-900" />
-        <Cartao titulo="Atrasado" valor={reais(t.atrasadoCentavos)} detalhe={`${t.atrasados} alunos`} cor="text-red-700" className="col-span-2" />
-      </section>
+      <Separator className="my-4" />
 
-      <nav className="mb-3 flex gap-2 overflow-x-auto" aria-label="Filtrar por situação">
-        {FILTROS.map((f) => (
-          <button
-            key={f}
-            onClick={() => setFiltro(f)}
-            className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium ${
-              filtro === f ? "bg-slate-900 text-white" : "bg-white text-slate-700 ring-1 ring-slate-200"
-            }`}
-          >
-            {f === "TODOS" ? "Todos" : ROTULO[f]}
-          </button>
-        ))}
-      </nav>
+      <Card className="divide-y">
+        <CardSection>
+          <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+            <Wallet className="size-3.5" aria-hidden />
+            Recebido no mês
+          </p>
+          <p className="mt-1 text-3xl font-bold tracking-tight text-success">{reais(t.recebidoCentavos)}</p>
+          <Progress
+            value={total ? Math.round((t.pagos / total) * 100) : 0}
+            className="mt-3"
+            aria-label="Alunos que já pagaram"
+          />
+          <p className="mt-1.5 text-xs text-muted-foreground">
+            {t.pagos} de {total} alunos pagaram
+          </p>
+        </CardSection>
+        <div className="grid grid-cols-2 divide-x">
+          <CardSection>
+            <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+              <Clock className="size-3.5" aria-hidden />
+              Em aberto
+            </p>
+            <p className="mt-1 text-xl font-bold">{reais(t.emAbertoCentavos)}</p>
+            <p className="text-xs text-muted-foreground">{t.abertos + t.atrasados} alunos</p>
+          </CardSection>
+          <CardSection>
+            <p className="flex items-center gap-1.5 text-xs font-medium text-destructive">
+              <TriangleAlert className="size-3.5" aria-hidden />
+              Atrasado
+            </p>
+            <p className="mt-1 text-xl font-bold text-destructive">{reais(t.atrasadoCentavos)}</p>
+            <p className="text-xs text-muted-foreground">{t.atrasados} alunos</p>
+          </CardSection>
+        </div>
+      </Card>
 
-      <ul className="space-y-2">
-        {itens.map((i) => (
-          <li key={i.cobrancaId}>
-            <Link
-              href={`/cobranca?id=${i.cobrancaId}`}
-              className="flex items-center justify-between rounded-xl bg-white px-3 py-3 shadow-sm ring-1 ring-slate-100 active:bg-slate-50"
-            >
-            <div className="min-w-0">
-              <p className="truncate font-medium">{i.aluno}</p>
-              <p className="truncate text-xs text-slate-500">
-                {i.turma} · vence {dataBr(i.vencimento)}
-              </p>
-            </div>
-            <div className="ml-3 shrink-0 text-right">
-              <p className="text-sm font-semibold">{reais(i.valorCentavos)}</p>
-              <span className={`mt-0.5 inline-block rounded-full px-2 py-0.5 text-xs font-semibold ${COR[i.status]}`}>
-                {ROTULO[i.status]}
-              </span>
-            </div>
-            </Link>
-          </li>
-        ))}
-        {itens.length === 0 && <li className="py-8 text-center text-sm text-slate-500">Nenhum aluno nesta situação.</li>}
-      </ul>
+      <Tabs value={filtro} onValueChange={(v) => setFiltro(v as Filtro)} className="mt-4">
+        <TabsList aria-label="Filtrar por situação">
+          {FILTROS.map((f) => (
+            <TabsTrigger key={f} value={f}>
+              {f === "TODOS" ? "Todos" : ROTULO[f]}
+              <span className="text-xs opacity-60">{contagem[f]}</span>
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
 
-      <footer className="mt-8 text-center">
-        <button
+      <Card className="mt-3">
+        <ul className="divide-y">
+          {itens.map((i) => (
+            <li key={i.cobrancaId}>
+              <Link
+                href={`/cobranca?id=${i.cobrancaId}`}
+                className="flex items-center gap-3 px-4 py-3 outline-none active:bg-muted focus-visible:bg-muted"
+              >
+                <span
+                  aria-hidden
+                  className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-bold text-primary"
+                >
+                  {iniciais(i.aluno)}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold">{i.aluno}</p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {i.turma} · vence {dataBr(i.vencimento).slice(0, 5)}
+                  </p>
+                </div>
+                <div className="flex shrink-0 flex-col items-end gap-1">
+                  <p className="text-sm font-semibold">{reais(i.valorCentavos)}</p>
+                  <StatusBadge status={i.status} />
+                </div>
+                <ChevronRight className="size-4 shrink-0 text-muted-foreground/60" aria-hidden />
+              </Link>
+            </li>
+          ))}
+          {itens.length === 0 && (
+            <li className="py-8 text-center text-sm text-muted-foreground">Nenhum aluno nesta situação.</li>
+          )}
+        </ul>
+      </Card>
+
+      <footer className="mt-6 flex justify-center">
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={async () => {
             if (confirm("Restaurar os dados originais da demonstração?")) {
               await api("/api/demo/resetar", { method: "POST" });
               await carregar();
             }
           }}
-          className="text-xs text-slate-400 underline"
         >
+          <RotateCcw aria-hidden />
           Restaurar dados da demo
-        </button>
+        </Button>
       </footer>
     </>
-  );
-}
-
-function Cartao(props: { titulo: string; valor: string; detalhe: string; cor: string; className?: string }) {
-  return (
-    <div className={`rounded-xl bg-white p-3 shadow-sm ring-1 ring-slate-100 ${props.className ?? ""}`}>
-      <p className="text-xs text-slate-500">{props.titulo}</p>
-      <p className={`text-xl font-bold ${props.cor}`}>{props.valor}</p>
-      <p className="text-xs text-slate-500">{props.detalhe}</p>
-    </div>
   );
 }

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import BottomNav from "@/components/BottomNav";
 import DemoBanner from "@/components/DemoBanner";
 
 export const metadata: Metadata = {
@@ -13,6 +14,7 @@ export const viewport: Viewport = {
   themeColor: "#0f766e",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -20,7 +22,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pt-BR" className="h-full antialiased">
       <body className="min-h-full bg-slate-50 text-slate-900">
         <DemoBanner />
-        <main className="mx-auto w-full max-w-md px-4 pb-16 pt-4">{children}</main>
+        <main className="mx-auto w-full max-w-md px-4 pb-28 pt-4">{children}</main>
+        <BottomNav />
       </body>
     </html>
   );

@@ -53,6 +53,9 @@ com migrações Flyway.
   partir de um número, sem relação com pessoas reais.
 - **Dados 100% fictícios:** a maioria dos alunos é menor de idade (LGPD). Nada real entra na demo.
 - **Link de demo com token** em vez de login: não existe cadastro público; basta impedir que qualquer um na internet mexa nos dados.
+- **Interface:** Tailwind + componentes no padrão shadcn/ui (estilo Origin UI) em `frontend/components/ui`, ícones Lucide,
+  navegação inferior e divisores em linha, pensados para o celular. Os componentes são copiados para o projeto (não é dependência
+  fechada), então dá para ajustar cada um.
 - **Polling a cada 5 s no painel** em vez de WebSocket: simples e suficiente para "atualiza sozinho".
 - **Tela "Acordando o sistema…":** a hospedagem gratuita da API dorme após 15 min; o front tenta `/api/health` até ela
   acordar em vez de mostrar erro.
