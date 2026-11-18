@@ -27,11 +27,18 @@ export default function BottomNav() {
               href={href}
               aria-current={ativo(href) ? "page" : undefined}
               className={cn(
-                "flex h-14 flex-col items-center justify-center gap-0.5 text-xs font-medium outline-none focus-visible:bg-muted",
-                ativo(href) ? "text-primary" : "text-muted-foreground",
+                "flex h-16 flex-col items-center justify-center gap-0.5 text-xs font-medium outline-none focus-visible:bg-muted",
+                ativo(href) ? "text-foreground" : "text-muted-foreground",
               )}
             >
-              <Icone className="size-5" aria-hidden />
+              <span
+                className={cn(
+                  "flex size-8 items-center justify-center rounded-lg transition-colors",
+                  ativo(href) && "bg-lime text-lime-foreground",
+                )}
+              >
+                <Icone className="size-5" aria-hidden />
+              </span>
               {rotulo}
             </Link>
           </li>

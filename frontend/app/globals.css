@@ -4,19 +4,23 @@
    e isso não pode quebrar o contraste). */
 :root {
   color-scheme: light;
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #f1f1f3;
+  --foreground: #111113;
   --card: #ffffff;
-  --primary: #0f766e;
+  --primary: #18181b;
   --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
+  --secondary: #ececef;
   --secondary-foreground: #0f172a;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent: #f0fdfa;
-  --border: #e2e8f0;
-  --input: #cbd5e1;
-  --ring: #14b8a6;
+  --muted: #f4f4f5;
+  --muted-foreground: #6b6b74;
+  --accent: #eef9d6;
+  --border: #e4e4e7;
+  --input: #d4d4d8;
+  --ring: #84cc16;
+  --lime: #d6f58f;
+  --lime-foreground: #3a5a0b;
+  --chart: #36b8ee;
+  --chart-soft: #bfe6f8;
   --success: #047857;
   --success-soft: #ecfdf5;
   --warning: #b45309;
@@ -40,6 +44,10 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-lime: var(--lime);
+  --color-lime-foreground: var(--lime-foreground);
+  --color-chart: var(--chart);
+  --color-chart-soft: var(--chart-soft);
   --color-success: var(--success);
   --color-success-soft: var(--success-soft);
   --color-warning: var(--warning);

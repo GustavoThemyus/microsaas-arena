@@ -8,11 +8,11 @@ function Progress({ className, value, ...props }: React.ComponentProps<typeof Pr
   return (
     <ProgressPrimitive.Root
       value={value}
-      className={cn("relative h-2 w-full overflow-hidden rounded-full bg-secondary", className)}
+      className={cn("relative h-2 w-full overflow-hidden rounded-full bg-chart-soft/60", className)}
       {...props}
     >
       <ProgressPrimitive.Indicator
-        className="h-full rounded-full bg-success transition-[width] duration-500"
+        className="h-full rounded-full bg-chart transition-[width] duration-500"
         style={{ width: `${value ?? 0}%` }}
       />
     </ProgressPrimitive.Root>
