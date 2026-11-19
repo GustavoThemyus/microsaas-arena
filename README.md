@@ -72,7 +72,10 @@ com migrações Flyway.
   Tudo roda numa transação: se a baixa falhar, o evento não fica gravado e o Asaas tenta de novo.
 - **Autenticação do webhook:** header `asaas-access-token` comparado em tempo constante. Sem token configurado, recusa tudo
   (falha fechada).
-- **Pix usa `PAYMENT_RECEIVED`**; tratamos `PAYMENT_CONFIRMED` também como pago porque a documentação não garante que ele nunca apareça no Pix.
+- **`PAYMENT_CONFIRMED` e `PAYMENT_RECEIVED` contam como pago:** no sandbox, ao confirmar um Pix pela API, o evento real que chegou
+  ao webhook foi `PAYMENT_CONFIRMED` (verificado nos logs do Asaas, com resposta 200 e `PROCESSADO`); em produção o Pix costuma
+  emitir `PAYMENT_RECEIVED`. Tratar os dois evita depender de qual deles o gateway envia. `PAYMENT_CREATED` e outros eventos
+  respondem 200 e são ignorados.
 - **Aluno atrasado:** o Asaas não aceita vencimento no passado, então o Pix vence hoje; o vencimento original fica guardado
   e o aluno continua "atrasado" até pagar.
 - **Gerar Pix é idempotente:** clicar duas vezes devolve o mesmo Pix (não cria duas cobranças). Não segura transação de banco
